@@ -4,7 +4,7 @@
 
 ## Descripción
 
-**SonifyLab Pro** es una herramienta de conversión de audio que te permite convertir fácilmente archivos de audio entre múltiples formatos. Con una interfaz gráfica de usuario (GUI) intuitiva, puedes agregar archivos individuales o carpetas completas, seleccionar el formato de salida, ajustar el bitrate y gestionar el proceso de conversión de manera eficiente.
+**SonifyLab Pro** es una herramienta de conversión de audio que te permite convertir fácilmente archivos de audio entre múltiples formatos. Con una interfaz gráfica intuitiva basada en PyQt5, puedes agregar archivos individuales o carpetas completas, seleccionar el formato de salida, ajustar el bitrate y gestionar el proceso de conversión de manera eficiente.
 
 ## Características
 
@@ -24,11 +24,8 @@
 
 ## Instalación
 
-### **Paso 1: Clonar el repositorio**
+### Paso 1: Clonar el repositorio
 
 ```bash
 git clone https://github.com/discodiski/SonifyLab.git
 cd SonifyLab
-
-# SonifyLab
-SonifyLab Pro: Convierte fácil y rápido tus archivos de audio a múltiples formatos. Diseñada en Python con interfaz gráfica PyQt5, te permite agregar archivos, elegir formato y bitrate, y gestionar las conversiones de forma sencilla. Ideal para usuarios que buscan una herramienta práctica y eficiente
