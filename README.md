@@ -44,7 +44,7 @@
 
 ## 🚀 Instalación
 
-### Linux (Ubuntu, Zorin OS, Linux Mint, Debian)
+### Linux (Ubuntu 22.04+, Zorin OS 17+, Fedora 38+)
 
 ```bash
 # Clonar el repositorio
@@ -57,10 +57,12 @@ chmod +x install.sh
 ```
 
 El instalador automáticamente:
-- ✅ Instala dependencias del sistema (Python, FFmpeg)
-- ✅ Crea un entorno virtual aislado
-- ✅ Instala PyQt5 y dependencias de Python
+- ✅ Instala GTK4 y Libadwaita (look nativo)
+- ✅ Instala FFmpeg
 - ✅ Crea acceso directo en el menú de aplicaciones
+
+> **Nota:** La versión GTK4 (`sonifylab_gtk.py`) ofrece un look 100% nativo.
+> Para la versión clásica PyQt5, ejecuta `python SonifyLab.py`
 
 ### Windows
 
