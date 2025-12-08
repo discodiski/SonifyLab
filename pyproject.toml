@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sonifylab"
-version = "1.0.0"
+version = "2.0.0"
 description = "Herramienta profesional de conversión de audio por lotes"
 readme = "README.md"
 license = {text = "GPL-3.0"}
 authors = [
     {name = "Discaury Salas", email = "discodiski@users.noreply.github.com"}
 ]
-keywords = ["audio", "converter", "ffmpeg", "mp3", "wav", "flac", "pyqt5"]
+keywords = ["audio", "converter", "ffmpeg", "mp3", "wav", "flac", "gtk4", "libadwaita"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: X11 Applications :: Qt",
