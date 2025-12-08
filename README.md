@@ -6,6 +6,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)]()
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey.svg)]()
 
 ---
@@ -118,14 +119,20 @@ python3 SonifyLab.py
 
 ```
 SonifyLab/
-├── SonifyLab.py       # Código principal de la aplicación
-├── requirements.txt   # Dependencias de Python
-├── install.sh         # Instalador para Linux
-├── icono.png          # Icono de la aplicación
-├── icono.ico          # Icono para Windows
+├── SonifyLab.py         # Código principal de la aplicación
+├── requirements.txt     # Dependencias de Python
+├── pyproject.toml       # Configuración de empaquetado
+├── install.sh           # Instalador para Linux
+├── install.bat          # Instalador para Windows
+├── pytest.ini           # Configuración de tests
+├── CHANGELOG.md         # Historial de cambios
+├── tests/
+│   └── test_sonifylab.py  # Tests unitarios
+├── icono.png            # Icono de la aplicación
+├── icono.ico            # Icono para Windows
 ├── pantallaprincipal.png  # Captura de pantalla
-├── LICENSE            # Licencia GPL-3.0
-└── README.md          # Este archivo
+├── LICENSE              # Licencia GPL-3.0
+└── README.md            # Este archivo
 ```
 
 ---
@@ -174,6 +181,15 @@ pyinstaller --onefile --windowed \
   --add-data "icono.png:." \
   --name "SonifyLab Pro" \
   SonifyLab.py
+```
+
+### Ejecutar tests
+```bash
+# Instalar dependencias de desarrollo
+pip install pytest pytest-qt
+
+# Ejecutar tests
+python -m pytest tests/ -v
 ```
 
 ---

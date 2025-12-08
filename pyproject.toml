@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sonifylab"
+version = "1.0.0"
+description = "Herramienta profesional de conversión de audio por lotes"
+readme = "README.md"
+license = {text = "GPL-3.0"}
+authors = [
+    {name = "Discaury Salas", email = "discodiski@users.noreply.github.com"}
+]
+keywords = ["audio", "converter", "ffmpeg", "mp3", "wav", "flac", "pyqt5"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Conversion",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "PyQt5>=5.15.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-qt>=4.0.0",
+    "pyinstaller>=5.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/discodiski/SonifyLab"
+Repository = "https://github.com/discodiski/SonifyLab.git"
+Issues = "https://github.com/discodiski/SonifyLab/issues"
+
+[project.gui-scripts]
+sonifylab = "SonifyLab:main"
+
+[tool.setuptools]
+py-modules = ["SonifyLab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

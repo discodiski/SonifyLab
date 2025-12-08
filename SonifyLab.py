@@ -1,3 +1,17 @@
+"""
+SonifyLab Pro - Herramienta de conversión de audio por lotes
+=============================================================
+
+Una aplicación de escritorio profesional para convertir archivos de audio
+entre múltiples formatos utilizando FFmpeg como motor de conversión.
+
+Autor: Discaury Salas
+Licencia: GPL-3.0
+Repositorio: https://github.com/discodiski/SonifyLab
+"""
+
+from __future__ import annotations
+
 import sys
 import os
 import subprocess
@@ -5,21 +19,27 @@ import logging
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import List, Optional
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton, QProgressBar,
     QTextEdit, QVBoxLayout, QHBoxLayout, QFileDialog, QMessageBox,
-    QComboBox, QAction, QMenuBar, QLineEdit, QCheckBox,
+    QComboBox, QAction, QLineEdit, QCheckBox,
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView, QSpacerItem,
     QSizePolicy
 )
 from PyQt5.QtCore import Qt, QObject, pyqtSlot, QProcess, pyqtSignal
 from PyQt5.QtGui import QIcon
 
+# Información de la aplicación
+__version__ = "1.0.0"
+__author__ = "Discaury Salas"
+__app_name__ = "SonifyLab Pro"
+
 # Directorio de la aplicación (para logs y configuración)
-APP_DIR = Path(__file__).parent.resolve()
-LOG_FILE = APP_DIR / 'conversion.log'
-CONVERSION_LOG = APP_DIR / 'conversion_history.jsonl'
+APP_DIR: Path = Path(__file__).parent.resolve()
+LOG_FILE: Path = APP_DIR / 'conversion.log'
+CONVERSION_LOG: Path = APP_DIR / 'conversion_history.jsonl'
 
 # Configuración del registro
 logging.basicConfig(
@@ -29,28 +49,47 @@ logging.basicConfig(
 )
 
 # Lista de formatos soportados
-SUPPORTED_FORMATS = [
+SUPPORTED_FORMATS: List[str] = [
     "mp3", "wav", "flac", "aac", "ogg", "m4a", "wma", "opus", "aiff", "alac"
 ]
+
+# Opciones de bitrate disponibles
+BITRATE_OPTIONS: List[str] = ["128k", "192k", "256k", "320k"]
 
 
 class ConversionProcess(QObject):
     """
     Clase que maneja la conversión de un archivo utilizando QProcess.
+    
+    Attributes:
+        index: Índice del archivo en la lista de conversión
+        input_file: Ruta al archivo de entrada
+        output_file: Ruta al archivo de salida
+        bitrate: Bitrate de salida (ej: '192k')
+        output_format: Formato de salida (ej: 'mp3')
     """
+    
+    # Señales Qt para comunicación con la interfaz
     progress_update = pyqtSignal(int, float)  # Índice, progreso (%)
-    status_update = pyqtSignal(int, str)
-    error_occurred = pyqtSignal(int, str)
-    info_update = pyqtSignal(int, str)  # Información adicional
-    finished = pyqtSignal(int, int)  # Índice, código de retorno
+    status_update = pyqtSignal(int, str)       # Índice, estado
+    error_occurred = pyqtSignal(int, str)      # Índice, mensaje de error
+    info_update = pyqtSignal(int, str)         # Índice, información adicional
+    finished = pyqtSignal(int, int)            # Índice, código de retorno
 
-    def __init__(self, index, input_file, output_file, bitrate, format):
+    def __init__(
+        self, 
+        index: int, 
+        input_file: str, 
+        output_file: str, 
+        bitrate: str, 
+        output_format: str
+    ) -> None:
         super().__init__()
-        self.index = index
-        self.input_file = input_file
-        self.output_file = output_file
-        self.bitrate = bitrate
-        self.format = format
+        self.index: int = index
+        self.input_file: str = input_file
+        self.output_file: str = output_file
+        self.bitrate: str = bitrate
+        self.output_format: str = output_format
         self.process = QProcess()
         self.process.setProcessChannelMode(QProcess.MergedChannels)
         self.process.readyReadStandardOutput.connect(self.read_output)

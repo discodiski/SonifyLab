@@ -1,1 +1,6 @@
+# Dependencias principales
 PyQt5>=5.15.0
+
+# Dependencias de desarrollo/testing
+pytest>=7.0.0
+pytest-qt>=4.0.0
