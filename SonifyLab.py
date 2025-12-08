@@ -4,6 +4,7 @@ import subprocess
 import logging
 import json
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton, QProgressBar,
@@ -12,14 +13,17 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView, QSpacerItem,
     QSizePolicy
 )
-from PyQt5.QtCore import (
-    Qt, QObject, pyqtSlot, QProcess, pyqtSignal, QLocale, QTranslator
-)
+from PyQt5.QtCore import Qt, QObject, pyqtSlot, QProcess, pyqtSignal
 from PyQt5.QtGui import QIcon
+
+# Directorio de la aplicación (para logs y configuración)
+APP_DIR = Path(__file__).parent.resolve()
+LOG_FILE = APP_DIR / 'conversion.log'
+CONVERSION_LOG = APP_DIR / 'conversion_history.jsonl'
 
 # Configuración del registro
 logging.basicConfig(
-    filename='conversion.log',
+    filename=str(LOG_FILE),
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -598,17 +602,19 @@ class MainWindow(QMainWindow):
 
     def log_conversion(self):
         """
-        Registra la conversión en un archivo JSON.
+        Registra la conversión en un archivo JSONL (JSON Lines).
         """
         log_entry = {
             "timestamp": datetime.now().isoformat(),
             "input_files": self.files,
             "output_folder": self.output_folder,
-            "output_format": self.format_combo.currentText()
+            "output_format": self.format_combo.currentText(),
+            "total_files": self.total_files,
+            "failed_files": [os.path.basename(f) for f in self.failed_files]
         }
         try:
-            with open("conversion_log.json", "a") as log_file:
-                json.dump(log_entry, log_file)
+            with open(CONVERSION_LOG, "a", encoding="utf-8") as log_file:
+                json.dump(log_entry, log_file, ensure_ascii=False)
                 log_file.write("\n")
         except Exception as e:
             logging.error(f"Error al escribir el archivo de registro: {e}")
@@ -646,14 +652,6 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-
-    # Configurar la traducción (internacionalización)
-    # Si tienes archivos de traducción, puedes cargarlos aquí
-    # translator = QTranslator()
-    # locale = QLocale.system().name()
-    # translator.load("app_" + locale)  # Por ejemplo: app_es.qm
-    # app.installTranslator(translator)
-
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
