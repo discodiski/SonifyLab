@@ -7,7 +7,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
 [![GTK4](https://img.shields.io/badge/GTK4-Libadwaita-4a86cf.svg)](https://gtk.org/)
-[![Tests](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)](tests/)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey.svg)]()
 
 ---
@@ -28,10 +28,10 @@
 | 🎵 **10 formatos soportados** | mp3, wav, flac, aac, ogg, m4a, wma, opus, aiff, alac |
 | ⚙️ **Personalización** | Selecciona bitrate (128k-320k) y formato de salida |
 | 🚀 **Procesamiento paralelo** | Aprovecha todos los núcleos de tu CPU |
-| 📊 **Progreso en tiempo real** | Velocidad de conversión y tiempo restante |
+| 📊 **Progreso en tiempo real** | Barra de progreso y contador de archivos |
 | 📁 **Añadir carpetas** | Escanea recursivamente carpetas completas |
+| 🌙 **Tema automático** | Sigue el tema oscuro/claro del sistema (Linux) |
 | 📝 **Registro detallado** | Historial de conversiones realizadas |
-| 🌍 **Preparado para i18n** | Interfaz lista para traducciones |
 
 ---
 
@@ -39,13 +39,13 @@
 
 - **Python** 3.8 o superior
 - **FFmpeg** instalado y accesible desde terminal
-- **Sistema operativo:** Linux, Windows o macOS
+- **Sistema operativo:** Linux (recomendado) o Windows
 
 ---
 
 ## 🚀 Instalación
 
-### Linux (Ubuntu 22.04+, Zorin OS 17+, Fedora 38+)
+### Linux (Ubuntu 22.04+, Zorin OS 17+, Fedora 38+) ⭐ Recomendado
 
 ```bash
 # Clonar el repositorio
@@ -61,9 +61,6 @@ El instalador automáticamente:
 - ✅ Instala GTK4 y Libadwaita (look nativo)
 - ✅ Instala FFmpeg
 - ✅ Crea acceso directo en el menú de aplicaciones
-
-> **Nota:** La versión GTK4 (`sonifylab_gtk.py`) ofrece un look 100% nativo.
-> Para la versión clásica PyQt5, ejecuta `python SonifyLab.py`
 
 ### Windows
 
@@ -81,19 +78,6 @@ python SonifyLab.py
 
 > **Nota:** En Windows necesitas [FFmpeg](https://ffmpeg.org/download.html) instalado y añadido al PATH.
 
-### macOS
-
-```bash
-# Instalar FFmpeg con Homebrew
-brew install ffmpeg
-
-# Clonar e instalar
-git clone https://github.com/discodiski/SonifyLab.git
-cd SonifyLab
-pip3 install -r requirements.txt
-python3 SonifyLab.py
-```
-
 ---
 
 ## 🎯 Uso
@@ -103,18 +87,23 @@ python3 SonifyLab.py
 2. ¡Listo para usar!
 
 ### Desde terminal
+
+**Linux (GTK4 - recomendado):**
 ```bash
-cd ~/ruta/a/SonifyLab
-source venv/bin/activate  # Solo Linux/macOS
-python3 SonifyLab.py
+python3 sonifylab_gtk.py
+```
+
+**Windows (PyQt5):**
+```bash
+python SonifyLab.py
 ```
 
 ### Flujo de trabajo
-1. **Añadir archivos:** Click en "Añadir archivos" o "Añadir carpeta"
-2. **Configurar:** Selecciona formato de salida y bitrate deseado
+1. **Añadir archivos:** Click en "+" o "📁" para añadir archivos o carpetas
+2. **Configurar:** Selecciona formato de salida y calidad (bitrate)
 3. **Carpeta de salida:** Selecciona dónde guardar los archivos convertidos
-4. **Convertir:** Click en "Iniciar Conversión"
-5. **Monitorear:** Observa el progreso en tiempo real
+4. **Convertir:** Click en "▶" para iniciar la conversión
+5. **Monitorear:** Observa el progreso en la barra inferior
 
 ---
 
@@ -122,18 +111,21 @@ python3 SonifyLab.py
 
 ```
 SonifyLab/
-├── SonifyLab.py         # Código principal de la aplicación
+├── sonifylab_gtk.py     # Versión GTK4 + Libadwaita (Linux) ⭐
+├── SonifyLab.py         # Versión PyQt5 (Windows)
+├── style.qss            # Estilos para PyQt5
 ├── requirements.txt     # Dependencias de Python
-├── pyproject.toml       # Configuración de empaquetado
-├── install.sh           # Instalador para Linux
+├── pyproject.toml       # Configuración de empaquetado (v2.0.0)
+├── install.sh           # Instalador para Linux (GTK4)
 ├── install.bat          # Instalador para Windows
 ├── pytest.ini           # Configuración de tests
 ├── CHANGELOG.md         # Historial de cambios
 ├── tests/
-│   └── test_sonifylab.py  # Tests unitarios
+│   ├── __init__.py
+│   └── test_sonifylab.py  # 15 tests unitarios
 ├── icono.png            # Icono de la aplicación
 ├── icono.ico            # Icono para Windows
-├── pantallaprincipal.png  # Captura de pantalla
+├── pantallaprincipal.png  # Captura de pantalla (GTK4)
 ├── LICENSE              # Licencia GPL-3.0
 └── README.md            # Este archivo
 ```
@@ -160,30 +152,21 @@ SonifyLab/
 ## 🛠️ Desarrollo
 
 ### Ejecutar desde código fuente
+
+**Linux (GTK4):**
 ```bash
-# Clonar repositorio
 git clone https://github.com/discodiski/SonifyLab.git
 cd SonifyLab
-
-# Crear entorno virtual
-python3 -m venv venv
-source venv/bin/activate
-
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Ejecutar
-python SonifyLab.py
+sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 ffmpeg
+python3 sonifylab_gtk.py
 ```
 
-### Crear ejecutable con PyInstaller
+**Windows (PyQt5):**
 ```bash
-pip install pyinstaller
-pyinstaller --onefile --windowed \
-  --icon=icono.ico \
-  --add-data "icono.png:." \
-  --name "SonifyLab Pro" \
-  SonifyLab.py
+git clone https://github.com/discodiski/SonifyLab.git
+cd SonifyLab
+pip install -r requirements.txt
+python SonifyLab.py
 ```
 
 ### Ejecutar tests
@@ -193,6 +176,8 @@ pip install pytest pytest-qt
 
 # Ejecutar tests
 python -m pytest tests/ -v
+
+# Resultado esperado: 15 passed
 ```
 
 ---
@@ -207,7 +192,7 @@ Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## 👤 Autor
 
-**Discaury Salas**
+**Discaury Salas** — [@discodiski](https://github.com/discodiski)
 
 ---
 
@@ -223,7 +208,9 @@ Las contribuciones son bienvenidas. Por favor:
 
 ---
 
-## ⭐ Agradecimientos
+## ⭐ Tecnologías
 
-- [FFmpeg](https://ffmpeg.org/) - Motor de conversión de audio
-- [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) - Framework de interfaz gráfica
+- [FFmpeg](https://ffmpeg.org/) — Motor de conversión de audio
+- [GTK4](https://gtk.org/) + [Libadwaita](https://gnome.pages.gitlab.gnome.org/libadwaita/) — Interfaz nativa Linux
+- [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) — Interfaz Windows
+- [pytest](https://pytest.org/) — Framework de testing
