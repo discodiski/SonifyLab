@@ -6,14 +6,15 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
+[![GTK4](https://img.shields.io/badge/GTK4-Libadwaita-4a86cf.svg)](https://gtk.org/)
 [![Tests](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)]()
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey.svg)]()
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey.svg)]()
 
 ---
 
 ## 📖 Descripción
 
-**SonifyLab Pro** es una aplicación de escritorio que te permite convertir fácilmente archivos de audio entre múltiples formatos. Con una interfaz gráfica intuitiva basada en PyQt5, puedes agregar archivos individuales o carpetas completas, seleccionar el formato de salida, ajustar el bitrate y gestionar el proceso de conversión de manera eficiente.
+**SonifyLab Pro** es una aplicación de escritorio moderna para convertir archivos de audio entre múltiples formatos. La versión principal usa **GTK4 + Libadwaita** para un look 100% nativo en GNOME/Zorin OS. También incluye una versión PyQt5 para compatibilidad con Windows.
 
 ![Pantalla Principal](pantallaprincipal.png)
 
