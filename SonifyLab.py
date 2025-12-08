@@ -215,126 +215,190 @@ class MainWindow(QMainWindow):
 
     def init_ui(self):
         """
-        Inicializa la interfaz de usuario.
+        Inicializa la interfaz de usuario con diseño moderno.
         """
         main_layout = QVBoxLayout()
+        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(20, 20, 20, 20)
 
-        # Menú
+        # ========== MENÚ ==========
         menu_bar = self.menuBar()
         file_menu = menu_bar.addMenu(self.tr("&Archivo"))
 
-        add_folder_action = QAction(self.tr("Añadir carpeta"), self)
+        add_folder_action = QAction(self.tr("📁 Añadir carpeta"), self)
+        add_folder_action.setShortcut("Ctrl+Shift+O")
         add_folder_action.triggered.connect(self.add_folder)
         file_menu.addAction(add_folder_action)
 
-        exit_action = QAction(self.tr("&Salir"), self)
+        file_menu.addSeparator()
+
+        exit_action = QAction(self.tr("❌ Salir"), self)
+        exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
 
         help_menu = menu_bar.addMenu(self.tr("&Ayuda"))
-        about_action = QAction(self.tr("&Acerca de"), self)
+        about_action = QAction(self.tr("ℹ️ Acerca de"), self)
         about_action.triggered.connect(self.show_about)
         help_menu.addAction(about_action)
 
-        # Archivos de entrada
-        files_label = QLabel(self.tr("Archivos de entrada:"))
+        # ========== SECCIÓN: ARCHIVOS DE ENTRADA ==========
+        files_label = QLabel(self.tr("📂 Archivos de entrada"))
+        files_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #1E293B;")
         main_layout.addWidget(files_label)
 
+        # Tabla de archivos
         self.files_table = QTableWidget(0, 4)
         self.files_table.setHorizontalHeaderLabels(
             [self.tr('Archivo'), self.tr('Estado'), self.tr('Progreso'), self.tr('Información')]
         )
-        self.files_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.files_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.files_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.files_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
+        self.files_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
+        self.files_table.setColumnWidth(2, 150)
         self.files_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.files_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.files_table.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.files_table.setAlternatingRowColors(True)
+        self.files_table.setMinimumHeight(200)
         main_layout.addWidget(self.files_table)
 
+        # Botones de archivos
         buttons_layout = QHBoxLayout()
+        buttons_layout.setSpacing(10)
+        
         self.add_files_btn = QPushButton(self.tr("Añadir archivos"))
+        self.add_files_btn.setToolTip("Seleccionar archivos de audio para convertir (Ctrl+O)")
+        self.add_files_btn.setShortcut("Ctrl+O")
         self.add_files_btn.clicked.connect(self.add_files)
         buttons_layout.addWidget(self.add_files_btn)
 
         self.remove_files_btn = QPushButton(self.tr("Eliminar archivos"))
+        self.remove_files_btn.setToolTip("Eliminar archivos seleccionados de la lista")
         self.remove_files_btn.clicked.connect(self.remove_files)
         buttons_layout.addWidget(self.remove_files_btn)
 
         self.clear_files_btn = QPushButton(self.tr("Limpiar lista"))
+        self.clear_files_btn.setToolTip("Eliminar todos los archivos de la lista")
         self.clear_files_btn.clicked.connect(self.clear_files)
         buttons_layout.addWidget(self.clear_files_btn)
 
+        buttons_layout.addStretch()
         main_layout.addLayout(buttons_layout)
+
+        # ========== SECCIÓN: CONFIGURACIÓN ==========
+        config_label = QLabel(self.tr("⚙️ Configuración"))
+        config_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #1E293B; margin-top: 10px;")
+        main_layout.addWidget(config_label)
 
         # Carpeta de salida
         output_layout = QHBoxLayout()
+        output_layout.setSpacing(10)
         output_label = QLabel(self.tr("Carpeta de salida:"))
+        output_label.setMinimumWidth(120)
         self.output_line_edit = QLineEdit()
+        self.output_line_edit.setPlaceholderText("Selecciona una carpeta donde guardar los archivos convertidos...")
         browse_output_btn = QPushButton(self.tr("Examinar"))
+        browse_output_btn.setToolTip("Seleccionar carpeta de destino")
         browse_output_btn.clicked.connect(self.browse_output_folder)
         output_layout.addWidget(output_label)
         output_layout.addWidget(self.output_line_edit)
         output_layout.addWidget(browse_output_btn)
         main_layout.addLayout(output_layout)
 
-        # Configuración
+        # Bitrate y Formato
         config_layout = QHBoxLayout()
+        config_layout.setSpacing(20)
+        
         bitrate_label = QLabel(self.tr("Bitrate:"))
         self.bitrate_combo = QComboBox()
-        self.bitrate_combo.addItems(["128k", "192k", "256k", "320k"])
+        self.bitrate_combo.addItems(BITRATE_OPTIONS)
         self.bitrate_combo.setCurrentText("192k")
+        self.bitrate_combo.setToolTip("Calidad del audio de salida (mayor = mejor calidad, más tamaño)")
         config_layout.addWidget(bitrate_label)
         config_layout.addWidget(self.bitrate_combo)
+
+        config_layout.addSpacing(30)
 
         format_label = QLabel(self.tr("Formato:"))
         self.format_combo = QComboBox()
         self.format_combo.addItems(SUPPORTED_FORMATS)
         self.format_combo.setCurrentText("mp3")
+        self.format_combo.setToolTip("Formato de audio de salida")
         config_layout.addWidget(format_label)
         config_layout.addWidget(self.format_combo)
 
+        config_layout.addStretch()
         main_layout.addLayout(config_layout)
 
         # Opciones adicionales
         options_layout = QHBoxLayout()
         self.overwrite_checkbox = QCheckBox(self.tr("Sobrescribir archivos existentes"))
+        self.overwrite_checkbox.setToolTip("Si está marcado, reemplazará archivos con el mismo nombre")
         options_layout.addWidget(self.overwrite_checkbox)
+        options_layout.addStretch()
         main_layout.addLayout(options_layout)
+
+        # ========== SECCIÓN: CONVERSIÓN ==========
+        conversion_label = QLabel(self.tr("🚀 Conversión"))
+        conversion_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #1E293B; margin-top: 10px;")
+        main_layout.addWidget(conversion_label)
 
         # Botones de conversión
         buttons_layout2 = QHBoxLayout()
+        buttons_layout2.setSpacing(12)
+        
         self.convert_btn = QPushButton(self.tr("Iniciar Conversión"))
+        self.convert_btn.setToolTip("Comenzar la conversión de todos los archivos (Ctrl+Enter)")
+        self.convert_btn.setShortcut("Ctrl+Return")
         self.convert_btn.clicked.connect(self.start_conversion)
+        self.convert_btn.setMinimumHeight(45)
         buttons_layout2.addWidget(self.convert_btn)
 
         self.stop_btn = QPushButton(self.tr("Detener"))
+        self.stop_btn.setToolTip("Detener la conversión en curso (Escape)")
+        self.stop_btn.setShortcut("Escape")
         self.stop_btn.clicked.connect(self.stop_conversion)
         self.stop_btn.setEnabled(False)
+        self.stop_btn.setMinimumHeight(45)
         buttons_layout2.addWidget(self.stop_btn)
 
-        # Espacio para alinear los botones a la derecha
-        spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        buttons_layout2.addItem(spacer)
-
+        buttons_layout2.addStretch()
         main_layout.addLayout(buttons_layout2)
 
         # Barra de progreso general
+        progress_layout = QHBoxLayout()
+        progress_label = QLabel(self.tr("Progreso total:"))
+        progress_label.setMinimumWidth(100)
         self.overall_progress_bar = QProgressBar()
-        main_layout.addWidget(self.overall_progress_bar)
+        self.overall_progress_bar.setMinimumHeight(20)
+        self.overall_progress_bar.setTextVisible(True)
+        self.overall_progress_bar.setFormat("%p%")
+        progress_layout.addWidget(progress_label)
+        progress_layout.addWidget(self.overall_progress_bar)
+        main_layout.addLayout(progress_layout)
 
-        # Registro de conversión
-        log_label = QLabel(self.tr("Registro de conversión:"))
+        # ========== SECCIÓN: REGISTRO ==========
+        log_label = QLabel(self.tr("📋 Registro de conversión"))
+        log_label.setStyleSheet("font-size: 14px; font-weight: bold; color: #1E293B; margin-top: 10px;")
         main_layout.addWidget(log_label)
 
         self.log_text_edit = QTextEdit()
         self.log_text_edit.setReadOnly(True)
+        self.log_text_edit.setMaximumHeight(120)
+        self.log_text_edit.setPlaceholderText("Los mensajes de conversión aparecerán aquí...")
         main_layout.addWidget(self.log_text_edit)
 
-        # Créditos
-        credits_label = QLabel(self.tr("Creado por Discaury Salas"))
+        # ========== CRÉDITOS ==========
+        credits_label = QLabel(self.tr(f"✨ {__app_name__} v{__version__} — Creado por {__author__}"))
         credits_label.setAlignment(Qt.AlignCenter)
+        credits_label.setStyleSheet("color: #64748B; font-size: 12px; padding: 10px;")
         main_layout.addWidget(credits_label)
 
+        # Contenedor principal
         container = QWidget()
+        container.setObjectName("centralwidget")
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
@@ -689,10 +753,32 @@ class MainWindow(QMainWindow):
             event.accept()
 
 
+def load_stylesheet() -> str:
+    """Carga el archivo de estilos QSS."""
+    style_path = APP_DIR / 'style.qss'
+    if style_path.exists():
+        with open(style_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    return ""
+
+
 def main():
+    """Punto de entrada principal de la aplicación."""
+    # Configurar la aplicación
     app = QApplication(sys.argv)
+    app.setApplicationName(__app_name__)
+    app.setApplicationVersion(__version__)
+    app.setOrganizationName("Discaury Salas")
+    
+    # Cargar estilos personalizados
+    stylesheet = load_stylesheet()
+    if stylesheet:
+        app.setStyleSheet(stylesheet)
+    
+    # Crear y mostrar la ventana principal
     window = MainWindow()
     window.show()
+    
     sys.exit(app.exec())
 
 
