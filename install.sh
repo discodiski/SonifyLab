@@ -1,9 +1,9 @@
 #!/bin/bash
 # ============================================
-# SonifyLab Pro - Instalador para Linux
+# SonifyLab Pro - Instalador para Linux (GTK4)
 # ============================================
 # Autor: Discaury Salas
-# Compatible con: Ubuntu, Zorin OS, Linux Mint, Debian
+# Compatible con: Ubuntu 22.04+, Zorin OS 17+, Fedora 38+
 # ============================================
 
 set -e
@@ -20,9 +20,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP_NAME="SonifyLab Pro"
 DESKTOP_FILE="$HOME/.local/share/applications/sonifylab.desktop"
 
-echo -e "${BLUE}╔════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║       ${GREEN}$APP_NAME - Instalador${BLUE}            ║${NC}"
-echo -e "${BLUE}╚════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}╔════════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║  ${GREEN}$APP_NAME - Instalador GTK4/Libadwaita${BLUE}     ║${NC}"
+echo -e "${BLUE}╚════════════════════════════════════════════════════╝${NC}"
 echo ""
 
 # Verificar que estamos en Linux
@@ -53,10 +53,6 @@ if ! check_command python3; then
     NEED_INSTALL=true
 fi
 
-if ! check_command pip3 && ! check_command pip; then
-    NEED_INSTALL=true
-fi
-
 if ! check_command ffmpeg; then
     NEED_INSTALL=true
 fi
@@ -68,44 +64,57 @@ fi
 # ============================================
 # PASO 2: Instalar dependencias faltantes
 # ============================================
-if [ "$NEED_INSTALL" = true ]; then
-    echo ""
-    echo -e "${YELLOW}[2/5]${NC} Instalando dependencias del sistema..."
+echo ""
+echo -e "${YELLOW}[2/5]${NC} Instalando dependencias del sistema..."
+
+# Detectar el gestor de paquetes
+if command -v apt &> /dev/null; then
+    echo "  Detectado: apt (Ubuntu/Debian/Zorin)"
     sudo apt update
-    sudo apt install -y python3 python3-pip python3-venv ffmpeg
+    sudo apt install -y python3 python3-pip python3-gi python3-gi-cairo \
+        gir1.2-gtk-4.0 gir1.2-adw-1 ffmpeg libadwaita-1-0
+elif command -v dnf &> /dev/null; then
+    echo "  Detectado: dnf (Fedora)"
+    sudo dnf install -y python3 python3-pip python3-gobject gtk4 \
+        libadwaita ffmpeg
+elif command -v pacman &> /dev/null; then
+    echo "  Detectado: pacman (Arch)"
+    sudo pacman -S --noconfirm python python-pip python-gobject gtk4 \
+        libadwaita ffmpeg
 else
-    echo ""
-    echo -e "${YELLOW}[2/5]${NC} Todas las dependencias del sistema están instaladas"
+    echo -e "${RED}Error: Gestor de paquetes no soportado${NC}"
+    echo "Instala manualmente: python3, python3-gi, gir1.2-gtk-4.0, gir1.2-adw-1, ffmpeg"
+    exit 1
 fi
 
-# ============================================
-# PASO 3: Crear entorno virtual
-# ============================================
-echo ""
-echo -e "${YELLOW}[3/5]${NC} Configurando entorno virtual de Python..."
-
-cd "$SCRIPT_DIR"
-
-if [ -d "venv" ]; then
-    echo "  Actualizando entorno virtual existente..."
-else
-    echo "  Creando nuevo entorno virtual..."
-    python3 -m venv venv
-fi
-
-# Activar entorno virtual
-source venv/bin/activate
+echo -e "  ${GREEN}✓${NC} Dependencias instaladas"
 
 # ============================================
-# PASO 4: Instalar dependencias de Python
+# PASO 3: Verificar GTK4 y Libadwaita
 # ============================================
 echo ""
-echo -e "${YELLOW}[4/5]${NC} Instalando dependencias de Python..."
+echo -e "${YELLOW}[3/5]${NC} Verificando GTK4 y Libadwaita..."
 
-pip install --upgrade pip --quiet
-pip install -r requirements.txt --quiet
+python3 -c "
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw
+print('  ✓ GTK4 versión:', Gtk.MAJOR_VERSION, '.', Gtk.MINOR_VERSION, sep='')
+print('  ✓ Libadwaita disponible')
+" 2>/dev/null || {
+    echo -e "${RED}Error: GTK4 o Libadwaita no están disponibles${NC}"
+    exit 1
+}
 
-echo -e "  ${GREEN}✓${NC} PyQt5 instalado correctamente"
+# ============================================
+# PASO 4: Hacer ejecutable el script
+# ============================================
+echo ""
+echo -e "${YELLOW}[4/5]${NC} Configurando la aplicación..."
+
+chmod +x "$SCRIPT_DIR/sonifylab_gtk.py"
+echo -e "  ${GREEN}✓${NC} Archivo ejecutable configurado"
 
 # ============================================
 # PASO 5: Crear entrada en el menú
@@ -120,17 +129,16 @@ mkdir -p "$HOME/.local/share/applications"
 cat > "$DESKTOP_FILE" << EOF
 [Desktop Entry]
 Name=SonifyLab Pro
-Comment=Herramienta de conversión de audio por lotes
-Exec=bash -c 'cd "$SCRIPT_DIR" && source venv/bin/activate && python3 SonifyLab.py'
-Icon=$SCRIPT_DIR/icono.png
+Comment=Conversor de audio profesional (GTK4)
+Exec=python3 "$SCRIPT_DIR/sonifylab_gtk.py"
+Icon=audio-x-generic
 Terminal=false
 Type=Application
-Categories=AudioVideo;Audio;AudioVideoEditing;
+Categories=AudioVideo;Audio;AudioVideoEditing;GTK;
 Keywords=audio;converter;mp3;wav;flac;ffmpeg;
-StartupWMClass=SonifyLab Pro
+StartupWMClass=com.discodiski.sonifylab
 EOF
 
-# Hacer ejecutable
 chmod +x "$DESKTOP_FILE"
 
 # Actualizar base de datos de aplicaciones
@@ -144,18 +152,16 @@ echo -e "  ${GREEN}✓${NC} Acceso directo creado en el menú"
 # RESUMEN FINAL
 # ============================================
 echo ""
-echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║     ¡Instalación completada con éxito!     ║${NC}"
-echo -e "${GREEN}╚════════════════════════════════════════════╝${NC}"
+echo -e "${GREEN}╔════════════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}║       ¡Instalación completada con éxito!           ║${NC}"
+echo -e "${GREEN}╚════════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "Puedes ejecutar $APP_NAME de dos formas:"
 echo ""
 echo -e "  ${BLUE}1.${NC} Desde el menú de aplicaciones (busca 'SonifyLab')"
 echo ""
 echo -e "  ${BLUE}2.${NC} Desde terminal:"
-echo -e "     cd $SCRIPT_DIR"
-echo -e "     source venv/bin/activate"
-echo -e "     python3 SonifyLab.py"
+echo -e "     python3 $SCRIPT_DIR/sonifylab_gtk.py"
 echo ""
-echo -e "${YELLOW}Nota:${NC} Si no aparece en el menú, cierra sesión y vuelve a iniciar."
+echo -e "${YELLOW}Nota:${NC} Esta versión usa GTK4 + Libadwaita para un look nativo."
 echo ""

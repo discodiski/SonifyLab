@@ -184,8 +184,9 @@ class MainWindow(QMainWindow):
     """
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("SonifyLab Pro")
-        self.resize(800, 700)
+        self.setWindowTitle(__app_name__)
+        self.resize(1000, 850)  # Tamaño más grande para pantallas HiDPI
+        self.setMinimumSize(800, 700)
 
         # Obtener la ruta del icono
         if getattr(sys, 'frozen', False):
@@ -764,11 +765,23 @@ def load_stylesheet() -> str:
 
 def main():
     """Punto de entrada principal de la aplicación."""
+    # Habilitar soporte para pantallas de alta resolución (HiDPI)
+    if hasattr(Qt, 'AA_EnableHighDpiScaling'):
+        QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    if hasattr(Qt, 'AA_UseHighDpiPixmaps'):
+        QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    
     # Configurar la aplicación
     app = QApplication(sys.argv)
     app.setApplicationName(__app_name__)
     app.setApplicationVersion(__version__)
     app.setOrganizationName("Discaury Salas")
+    
+    # Configurar política de escalado HiDPI
+    if hasattr(Qt, 'HighDpiScaleFactorRoundingPolicy'):
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
     
     # Cargar estilos personalizados
     stylesheet = load_stylesheet()
