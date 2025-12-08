@@ -113,6 +113,8 @@ class SonifyLabWindow(Adw.ApplicationWindow):
         self.conversion_threads: List[threading.Thread] = []
         self.completed_count: int = 0
         self.total_count: int = 0
+        self.failed_files: List[str] = []  # Track failed conversions
+        self._lock = threading.Lock()  # Thread safety
         
         # Crear el modelo de lista
         self.list_store = Gio.ListStore.new(FileItem)
@@ -121,9 +123,12 @@ class SonifyLabWindow(Adw.ApplicationWindow):
     
     def setup_ui(self):
         """Configura la interfaz de usuario."""
-        # Contenedor principal con HeaderBar
+        # Contenedor principal con ToastOverlay para notificaciones
+        self.toast_overlay = Adw.ToastOverlay()
+        self.set_content(self.toast_overlay)
+        
         main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.set_content(main_box)
+        self.toast_overlay.set_child(main_box)
         
         # === HEADER BAR ===
         header = Adw.HeaderBar()
@@ -560,12 +565,16 @@ class SonifyLabWindow(Adw.ApplicationWindow):
     
     def file_completed(self):
         """Callback cuando un archivo termina de convertirse."""
-        self.completed_count += 1
-        progress = self.completed_count / self.total_count
-        self.progress_bar.set_fraction(progress)
-        self.progress_label.set_label(f"Progreso: {self.completed_count}/{self.total_count}")
+        with self._lock:
+            self.completed_count += 1
+            count = self.completed_count
+            total = self.total_count
         
-        if self.completed_count >= self.total_count:
+        progress = count / total if total > 0 else 0
+        self.progress_bar.set_fraction(progress)
+        self.progress_label.set_label(f"{count}/{total}")
+        
+        if count >= total:
             self.conversion_finished()
     
     def conversion_finished(self):
@@ -573,16 +582,19 @@ class SonifyLabWindow(Adw.ApplicationWindow):
         self.is_converting = False
         self.convert_btn.set_sensitive(True)
         self.stop_btn.set_sensitive(False)
-        self.progress_label.set_label("¡Conversión completada!")
+        self.progress_label.set_label("✓ Completado")
         self.log("✓ Conversión completada")
+        
+        # Limpiar hilos terminados
+        self.conversion_threads.clear()
         
         # Guardar log
         self.save_conversion_log()
         
-        # Mostrar notificación
+        # Mostrar notificación toast
         toast = Adw.Toast(title="¡Conversión completada!")
         toast.set_timeout(3)
-        # Note: Would need toast overlay for this
+        self.toast_overlay.add_toast(toast)
     
     def on_stop_conversion(self, button):
         """Detiene la conversión."""
