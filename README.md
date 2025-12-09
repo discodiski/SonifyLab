@@ -7,7 +7,8 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
 [![GTK4](https://img.shields.io/badge/GTK4-Libadwaita-4a86cf.svg)](https://gtk.org/)
-[![Tests](https://img.shields.io/badge/tests-15%20passed-brightgreen.svg)](tests/)
+[![Tests](https://github.com/discodiski/SonifyLab/actions/workflows/tests.yml/badge.svg)](https://github.com/discodiski/SonifyLab/actions/workflows/tests.yml)
+[![Pylint](https://github.com/discodiski/SonifyLab/actions/workflows/pylint.yml/badge.svg)](https://github.com/discodiski/SonifyLab/actions/workflows/pylint.yml)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey.svg)]()
 
 ---
