@@ -1,217 +1,348 @@
-# SonifyLab Pro
+# 🎵 SonifyLab Pro v2.0.0 - Documentación Principal
 
-![SonifyLab Pro Logo](icono.png)
+**Conversor de audio profesional con interfaz gráfica dual (PyQt5/GTK4)**
 
-> 🎵 **Herramienta profesional de conversión de audio por lotes**
+![Versión](https://img.shields.io/badge/versión-2.0.0-blue)
+![Python](https://img.shields.io/badge/python-3.8%2B-green)
+![Licencia](https://img.shields.io/badge/licencia-MIT-yellow)
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-green.svg)](https://www.python.org/downloads/)
-[![GTK4](https://img.shields.io/badge/GTK4-Libadwaita-4a86cf.svg)](https://gtk.org/)
-[![Tests](https://github.com/discodiski/SonifyLab/actions/workflows/tests.yml/badge.svg)](https://github.com/discodiski/SonifyLab/actions/workflows/tests.yml)
-[![Pylint](https://github.com/discodiski/SonifyLab/actions/workflows/pylint.yml/badge.svg)](https://github.com/discodiski/SonifyLab/actions/workflows/pylint.yml)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-lightgrey.svg)]()
+## 📖 Índice
 
----
-
-## 📖 Descripción
-
-**SonifyLab Pro** es una aplicación de escritorio moderna para convertir archivos de audio entre múltiples formatos. La versión principal usa **GTK4 + Libadwaita** para un look 100% nativo en GNOME/Zorin OS. También incluye una versión PyQt5 para compatibilidad con Windows.
-
-![Pantalla Principal](pantallaprincipal.png)
-
----
-
-## ✨ Características
-
-| Característica | Descripción |
-|----------------|-------------|
-| 🔄 **Conversión por lotes** | Convierte múltiples archivos simultáneamente |
-| 🎵 **10 formatos soportados** | mp3, wav, flac, aac, ogg, m4a, wma, opus, aiff, alac |
-| ⚙️ **Personalización** | Selecciona bitrate (128k-320k) y formato de salida |
-| 🚀 **Procesamiento paralelo** | Aprovecha todos los núcleos de tu CPU |
-| 📊 **Progreso en tiempo real** | Barra de progreso y contador de archivos |
-| 📁 **Añadir carpetas** | Escanea recursivamente carpetas completas |
-| 🌙 **Tema automático** | Sigue el tema oscuro/claro del sistema (Linux) |
-| 📝 **Registro detallado** | Historial de conversiones realizadas |
+- [Descripción](#descripción)
+- [Características](#características)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Arquitectura](#arquitectura)
+- [Desarrollo](#desarrollo)
+- [Tests](#tests)
+- [Contribuir](#contribuir)
+- [Licencia](#licencia)
 
 ---
 
-## 📋 Requisitos
+## Descripción
 
-- **Python** 3.8 o superior
-- **FFmpeg** instalado y accesible desde terminal
-- **Sistema operativo:** Linux (recomendado) o Windows
+SonifyLab Pro es una aplicación de escritorio para conversión de archivos de audio entre múltiples formatos. Construido con una arquitectura modular moderna que separa completamente la lógica de negocio de la interfaz gráfica, permitiendo soporte nativo para múltiples toolkits gráficos (PyQt5 y GTK4).
+
+### ¿Qué's Nuevo en v2.0.0?
+
+- ✅ **Arquitectura 100% modular** - Código reorganizado en capas independientes
+- ✅ **Doble interfaz gráfica** - Soporte automático para PyQt5 o GTK4
+- ✅ **Tipado estático completo** - Mejor soporte IDE y detección temprana de errores
+- ✅ **Tests unitarios** - Cobertura completa del core y modelos
+- ✅ **Documentación SDD** - Desarrollado con Spec-Driven Development
 
 ---
 
-## 🚀 Instalación
+## Características
 
-### Linux (Ubuntu 22.04+, Zorin OS 17+, Fedora 38+) ⭐ Recomendado
+### Formatos Soportados
+- **Entrada**: MP3, WAV, FLAC, OGG, M4A, AAC, WMA
+- **Salida**: WAV, MP3, FLAC, OGG, M4A
 
+### Funcionalidades Clave
+- 🔄 Conversión por lotes (múltiples archivos simultáneos)
+- ⚙️ Configuración personalizada (bitrate, sample rate, canales)
+- 📊 Barra de progreso en tiempo real
+- ❌ Manejo robusto de errores con mensajes descriptivos
+- 🎯 Validación de archivos antes de conversión
+- 📝 Logging detallado para debugging
+- 🖥️ Detección automática de interfaz gráfica disponible
+
+### Interfaz Gráfica
+- **PyQt5**: Interfaz moderna y pulida para Windows/Linux/macOS
+- **GTK4**: Integración nativa con entornos GNOME/Linux
+
+---
+
+## Requisitos
+
+### Sistema
+- Python 3.8 o superior
+- FFmpeg instalado y disponible en PATH
+
+### Dependencias Python
+
+**Obligatorio:**
 ```bash
-# Clonar el repositorio
-git clone https://github.com/discodiski/SonifyLab.git
-cd SonifyLab
-
-# Ejecutar instalador automático
-chmod +x install.sh
-./install.sh
+# Uno de los siguientes (o ambos)
+PyQt5>=5.15.0
+PyGObject>=3.40.0  # Para GTK4
 ```
 
-El instalador automáticamente:
-- ✅ Instala GTK4 y Libadwaita (look nativo)
-- ✅ Instala FFmpeg
-- ✅ Crea acceso directo en el menú de aplicaciones
+**Opcional (desarrollo):**
+```bash
+pytest>=7.0.0
+pytest-cov>=3.0.0
+black>=22.0.0
+flake8>=4.0.0
+mypy>=0.950
+```
 
-### Windows
+### Instalar FFmpeg
 
-```powershell
-# Clonar el repositorio
-git clone https://github.com/discodiski/SonifyLab.git
-cd SonifyLab
+**Ubuntu/Debian:**
+```bash
+sudo apt update && sudo apt install ffmpeg
+```
+
+**Fedora:**
+```bash
+sudo dnf install ffmpeg
+```
+
+**macOS:**
+```bash
+brew install ffmpeg
+```
+
+**Windows:**
+1. Descargar desde https://ffmpeg.org/download.html
+2. Extraer y agregar `bin/` al PATH del sistema
+
+---
+
+## Instalación
+
+### Método 1: Desde Repositorio (Recomendado)
+
+```bash
+# Clonar repositorio
+git clone https://github.com/tu-usuario/sonifylab-pro.git
+cd sonifylab-pro
+
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate  # Windows
 
 # Instalar dependencias
 pip install -r requirements.txt
-
-# Ejecutar
-python SonifyLab.py
 ```
 
-> **Nota:** En Windows necesitas [FFmpeg](https://ffmpeg.org/download.html) instalado y añadido al PATH.
+### Método 2: Pip (Próximamente)
+
+```bash
+pip install sonifylab-pro
+```
 
 ---
 
-## 🎯 Uso
+## Uso
 
-### Desde el menú de aplicaciones (Linux)
-1. Busca "SonifyLab" en el menú de aplicaciones
-2. ¡Listo para usar!
+### Ejecución Básica
 
-### Desde terminal
-
-**Linux (GTK4 - recomendado):**
 ```bash
-python3 sonifylab_gtk.py
+# La aplicación detectará automáticamente la UI disponible
+python -m sonifylab.run
 ```
 
-**Windows (PyQt5):**
+### Forzar Interfaz Específica
+
 ```bash
-python SonifyLab.py
+# Usar PyQt5 explícitamente
+python -m sonifylab.run --ui pyqt5
+
+# Usar GTK4 explícitamente
+python -m sonifylab.run --ui gtk4
 ```
 
-### Flujo de trabajo
-1. **Añadir archivos:** Click en "+" o "📁" para añadir archivos o carpetas
-2. **Configurar:** Selecciona formato de salida y calidad (bitrate)
-3. **Carpeta de salida:** Selecciona dónde guardar los archivos convertidos
-4. **Convertir:** Click en "▶" para iniciar la conversión
-5. **Monitorear:** Observa el progreso en la barra inferior
+### Flujo de Trabajo
+
+1. **Abrir aplicación**: Ejecutar `python -m sonifylab.run`
+2. **Agregar archivos**: Click en "Agregar Archivos" o arrastrar y soltar
+3. **Configurar opciones**: Seleccionar formato de salida, bitrate, sample rate
+4. **Iniciar conversión**: Click en "Convertir"
+5. **Monitorear progreso**: Ver barras de progreso en tiempo real
+6. **Acceder resultados**: Los archivos convertidos se guardan en el directorio especificado
+
+### Capturas de Pantalla
+
+*(Espacio reservado para capturas de las interfaces PyQt5 y GTK4)*
 
 ---
 
-## 📁 Estructura del proyecto
+## Arquitectura
+
+SonifyLab Pro v2.0.0 sigue principios de **Clean Architecture** adaptados para aplicaciones de escritorio:
 
 ```
-SonifyLab/
-├── sonifylab_gtk.py     # Versión GTK4 + Libadwaita (Linux) ⭐
-├── SonifyLab.py         # Versión PyQt5 (Windows)
-├── style.qss            # Estilos para PyQt5
-├── requirements.txt     # Dependencias de Python
-├── pyproject.toml       # Configuración de empaquetado (v2.0.0)
-├── install.sh           # Instalador para Linux (GTK4)
-├── install.bat          # Instalador para Windows
-├── pytest.ini           # Configuración de tests
-├── CHANGELOG.md         # Historial de cambios
-├── tests/
+┌─────────────────────────────────────────────┐
+│              Capa de Presentación           │
+│  ┌──────────────┐    ┌──────────────┐      │
+│  │   PyQt5 UI   │    │    GTK4 UI   │      │
+│  └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────┘
+                    ↓ usa
+┌─────────────────────────────────────────────┐
+│            Capa de Modelos                  │
+│  ┌──────────────┐    ┌──────────────┐      │
+│  │  FileItem    │    │ConversionCfg │      │
+│  └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────┘
+                    ↓ usa
+┌─────────────────────────────────────────────┐
+│             Capa Core (Negocio)             │
+│  ┌──────────────────────────────────┐      │
+│  │       AudioConverter             │      │
+│  └──────────────────────────────────┘      │
+└─────────────────────────────────────────────┘
+                    ↓ usa
+┌─────────────────────────────────────────────┐
+│          Capa de Utilidades                 │
+│  ┌──────────────┐    ┌──────────────┐      │
+│  │  Validators  │    │   Logger     │      │
+│  └──────────────┘    └──────────────┘      │
+└─────────────────────────────────────────────┘
+```
+
+### Estructura de Directorios
+
+```
+sonifylab/
+├── models/               # Modelos de datos
 │   ├── __init__.py
-│   └── test_sonifylab.py  # 15 tests unitarios
-├── icono.png            # Icono de la aplicación
-├── icono.ico            # Icono para Windows
-├── pantallaprincipal.png  # Captura de pantalla (GTK4)
-├── LICENSE              # Licencia GPL-3.0
-└── README.md            # Este archivo
+│   ├── file_item.py      # Modelo FileItem
+│   └── conversion_config.py  # Configuración
+├── core/                 # Lógica de negocio
+│   ├── __init__.py
+│   ├── converter.py      # Motor de conversión
+│   └── exceptions.py     # Excepciones personalizadas
+├── ui/                   # Interfaces gráficas
+│   ├── __init__.py
+│   ├── base.py           # Clase abstracta UIBase
+│   ├── pyqt5_interface.py  # Implementación PyQt5
+│   └── gtk4_interface.py   # Implementación GTK4
+├── utils/                # Utilidades
+│   ├── __init__.py
+│   ├── file_validator.py   # Validación de archivos
+│   └── logger.py         # Sistema de logging
+├── run.py                # Entry point principal
+└── __init__.py           # Constantes y versión
 ```
+
+### Principios de Diseño
+
+1. **Separación estricta**: El core no conoce nada de la UI
+2. **Inmutabilidad**: Los modelos son dataclasses inmutables
+3. **Tipado estático**: Todo el código está completamente tipado
+4. **Excepciones específicas**: Errores del dominio bien definidos
+5. **Logging centralizado**: Un único punto para logs
 
 ---
 
-## 🔧 Formatos soportados
+## Desarrollo
 
-| Formato | Extensión | Descripción |
-|---------|-----------|-------------|
-| MP3 | `.mp3` | El más compatible, buena compresión |
-| WAV | `.wav` | Sin pérdida, archivos grandes |
-| FLAC | `.flac` | Sin pérdida, comprimido |
-| AAC | `.aac` | Alta calidad, usado en Apple |
-| OGG | `.ogg` | Código abierto, buena calidad |
-| M4A | `.m4a` | Contenedor AAC de Apple |
-| WMA | `.wma` | Formato de Microsoft |
-| OPUS | `.opus` | Moderno, excelente compresión |
-| AIFF | `.aiff` | Sin pérdida, formato Apple |
-| ALAC | `.alac` | Apple Lossless |
+Ver documentación completa en [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)
 
----
+### Quick Start
 
-## 🛠️ Desarrollo
-
-### Ejecutar desde código fuente
-
-**Linux (GTK4):**
 ```bash
-git clone https://github.com/discodiski/SonifyLab.git
-cd SonifyLab
-sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 ffmpeg
-python3 sonifylab_gtk.py
-```
-
-**Windows (PyQt5):**
-```bash
-git clone https://github.com/discodiski/SonifyLab.git
-cd SonifyLab
-pip install -r requirements.txt
-python SonifyLab.py
-```
-
-### Ejecutar tests
-```bash
-# Instalar dependencias de desarrollo
-pip install pytest pytest-qt
+# Configurar entorno de desarrollo
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements-dev.txt
 
 # Ejecutar tests
-python -m pytest tests/ -v
+pytest tests/ -v
 
-# Resultado esperado: 15 passed
+# Linting
+flake8 sonifylab/
+black --check sonifylab/
+
+# Type checking
+mypy sonifylab/
 ```
 
 ---
 
-## 📄 Licencia
+## Tests
 
-Este proyecto está licenciado bajo la **GNU General Public License v3.0**.
+### Ejecutar Tests
 
-Ver el archivo [LICENSE](LICENSE) para más detalles.
+```bash
+# Todos los tests
+pytest tests/ -v
+
+# Con cobertura
+pytest tests/ --cov=sonifylab --cov-report=html
+
+# Tests específicos
+pytest tests/test_core.py -v
+pytest tests/test_models.py -v
+```
+
+### Estructura de Tests
+
+- `tests/test_models.py` - Tests de modelos de datos
+- `tests/test_core.py` - Tests del motor de conversión
+- `tests/test_utils.py` - Tests de utilidades
+- `tests/test_ui_pyqt5.py` - Tests de interfaz PyQt5
+- `tests/test_ui_gtk4.py` - Tests de interfaz GTK4
+
+Ver [`tests/README.md`](tests/README.md) para más detalles.
 
 ---
 
-## 👤 Autor
+## Contribuir
 
-**Discaury Salas** — [@discodiski](https://github.com/discodiski)
+¡Las contribuciones son bienvenidas! Por favor sigue estos pasos:
+
+1. **Fork** el repositorio
+2. **Crea una rama** para tu feature (`git checkout -b feature/amazing-feature`)
+3. **Commit** tus cambios (`git commit -m 'feat: add amazing feature'`)
+4. **Push** a la rama (`git push origin feature/amazing-feature`)
+5. **Abre un Pull Request**
+
+### Convenciones de Commits
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` Nueva funcionalidad
+- `fix:` Corrección de bug
+- `docs:` Cambios en documentación
+- `style:` Formato, faltantes, etc.
+- `refactor:` Refactorización de código
+- `test:` Agregar o corregir tests
+- `chore:` Cambios en build, dependencias, etc.
+
+### Código de Conducta
+
+- Sé respetuoso y constructivo
+- Sigue los estándares de código existentes
+- Escribe tests para nuevas funcionalidades
+- Documenta cambios importantes
+
+Ver [`CONTRIBUTING.md`](CONTRIBUTING.md) para guía detallada.
 
 ---
 
-## 🤝 Contribuciones
+## Licencia
 
-Las contribuciones son bienvenidas. Por favor:
-
-1. Haz fork del proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit tus cambios (`git commit -m 'Añadir nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abre un Pull Request
+Este proyecto está licenciado bajo la **MIT License** - ver el archivo [LICENSE](LICENSE) para detalles.
 
 ---
 
-## ⭐ Tecnologías
+## Agradecimientos
 
-- [FFmpeg](https://ffmpeg.org/) — Motor de conversión de audio
-- [GTK4](https://gtk.org/) + [Libadwaita](https://gnome.pages.gitlab.gnome.org/libadwaita/) — Interfaz nativa Linux
-- [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) — Interfaz Windows
-- [pytest](https://pytest.org/) — Framework de testing
+- [FFmpeg](https://ffmpeg.org/) - El corazón de la conversión de audio
+- [PyQt5](https://www.riverbankcomputing.com/static/Docs/PyQt5/) - Framework gráfico
+- [GTK4](https://gtk.org/) - Toolkit gráfico moderno
+- Todos los contribuidores al proyecto
+
+---
+
+## Contacto
+
+- **Issues**: Reporta bugs o solicita features en [GitHub Issues](https://github.com/tu-usuario/sonifylab-pro/issues)
+- **Discusiones**: Únete a las discusiones en [GitHub Discussions](https://github.com/tu-usuario/sonifylab-pro/discussions)
+
+---
+
+**Hecho con ❤️ para la comunidad de audio digital**
+
+*Última actualización: 2024 | Versión: 2.0.0*
